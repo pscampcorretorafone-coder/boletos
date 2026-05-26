@@ -1,32 +1,102 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Fragment } from 'react'
 
-const styles = {
-  container: { padding: '24px', fontFamily: 'Arial, sans-serif', maxWidth: '1100px', margin: '0 auto', background: '#f5f7fa', minHeight: '100vh' },
-  header: { background: '#1a3c5e', color: '#fff', padding: '16px 24px', borderRadius: '8px', marginBottom: '24px' },
-  card: { background: '#fff', borderRadius: '8px', padding: '20px', marginBottom: '20px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)' },
-  h2: { margin: '0 0 16px 0', color: '#1a3c5e', fontSize: '18px' },
-  input: { padding: '8px 12px', border: '1px solid #ccc', borderRadius: '6px', marginRight: '8px', marginBottom: '8px', fontSize: '14px', minWidth: '160px' },
-  btn: { padding: '8px 16px', background: '#1a3c5e', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', marginRight: '8px' },
-  btnDanger: { padding: '6px 12px', background: '#e53935', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' },
-  btnSuccess: { padding: '6px 12px', background: '#2e7d32', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', marginRight: '6px' },
-  btnSecondary: { padding: '6px 12px', background: '#546e7a', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', marginRight: '6px' },
-  table: { width: '100%', borderCollapse: 'collapse', fontSize: '14px' },
-  th: { background: '#e8edf2', padding: '10px 12px', textAlign: 'left', fontWeight: '600', color: '#333', borderBottom: '2px solid #ccc' },
-  td: { padding: '9px 12px', borderBottom: '1px solid #eee', verticalAlign: 'middle' },
-  badge: (status) => ({
-    padding: '2px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: '600',
-    background: status === 'Pago' ? '#c8e6c9' : status === 'Vencido' ? '#ffcdd2' : '#fff9c4',
-    color: status === 'Pago' ? '#2e7d32' : status === 'Vencido' ? '#c62828' : '#f57f17'
-  }),
-  select: { padding: '8px 12px', border: '1px solid #ccc', borderRadius: '6px', marginRight: '8px', marginBottom: '8px', fontSize: '14px' },
-  tabBar: { display: 'flex', gap: '8px', marginBottom: '20px' },
-  tab: (active) => ({
-    padding: '10px 20px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: active ? '700' : '400',
-    background: active ? '#1a3c5e' : '#dce3ea', color: active ? '#fff' : '#333'
-  })
+// ── Icons (inline SVG) ──────────────────────────────────────────────────────
+function IconUsers() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  )
 }
 
-// ── Tab Segurados ──────────────────────────────────────────────────────────────
+function IconShield() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+    </svg>
+  )
+}
+
+function IconCash() {
+  return (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+    </svg>
+  )
+}
+
+function IconPlus() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+    </svg>
+  )
+}
+
+function IconTrash() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+    </svg>
+  )
+}
+
+function IconEdit() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+    </svg>
+  )
+}
+
+function IconCheck() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+    </svg>
+  )
+}
+
+function IconX() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  )
+}
+
+function IconEye() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+    </svg>
+  )
+}
+
+function IconChevron({ open }) {
+  return (
+    <svg className={`w-3 h-3 transition-transform ${open ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+    </svg>
+  )
+}
+
+// ── Badge Component ──────────────────────────────────────────────────────────
+function StatusBadge({ status }) {
+  const colors = {
+    Pago: 'bg-discord-green/20 text-green-400 border-discord-green/30',
+    Vencido: 'bg-discord-red/20 text-red-400 border-discord-red/30',
+    Pendente: 'bg-discord-yellow/20 text-yellow-400 border-discord-yellow/30',
+  }
+  return (
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${colors[status] || colors.Pendente}`}>
+      {status}
+    </span>
+  )
+}
+
+// ── Tab Segurados ────────────────────────────────────────────────────────────
 function SeguradosTab() {
   const [segurados, setSegurados] = useState([])
   const [loading, setLoading] = useState(false)
@@ -35,6 +105,7 @@ function SeguradosTab() {
   const [editForm, setEditForm] = useState({})
   const [detalheId, setDetalheId] = useState(null)
   const [detalhe, setDetalhe] = useState(null)
+  const [showForm, setShowForm] = useState(false)
 
   useEffect(() => { fetchSegurados() }, [])
 
@@ -42,7 +113,7 @@ function SeguradosTab() {
     setLoading(true)
     const r = await fetch('/api/segurados')
     const d = await r.json()
-    setSegurados(d || [])
+    setSegurados(Array.isArray(d) ? d : [])
     setLoading(false)
   }
 
@@ -51,6 +122,7 @@ function SeguradosTab() {
     if (!form.nome) return alert('Nome é obrigatório')
     await fetch('/api/segurados', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })
     setForm({ nome: '', whatsapp: '', email: '', cpf: '', forma_pagamento: 'Boleto' })
+    setShowForm(false)
     fetchSegurados()
   }
 
@@ -75,96 +147,210 @@ function SeguradosTab() {
   }
 
   return (
-    <div>
-      <div style={styles.card}>
-        <h2 style={styles.h2}>Adicionar Cliente</h2>
-        <form onSubmit={adicionar}>
-          <input style={styles.input} placeholder="Nome *" value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} />
-          <input style={styles.input} placeholder="WhatsApp" value={form.whatsapp} onChange={e => setForm({ ...form, whatsapp: e.target.value })} />
-          <input style={styles.input} placeholder="Email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
-          <input style={styles.input} placeholder="CPF" value={form.cpf} onChange={e => setForm({ ...form, cpf: e.target.value })} />
-          <select style={styles.select} value={form.forma_pagamento} onChange={e => setForm({ ...form, forma_pagamento: e.target.value })}>
-            <option>Boleto</option><option>PIX</option><option>Cartão</option><option>Débito Automático</option>
-          </select>
-          <button style={styles.btn} type="submit">Adicionar</button>
-        </form>
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-white">Clientes</h2>
+          <p className="text-sm text-discord-text-muted">{segurados.length} cliente(s) cadastrado(s)</p>
+        </div>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="flex items-center gap-2 px-4 py-2 bg-discord-brand hover:bg-discord-brand-hover text-white text-sm font-medium rounded-md transition-colors"
+        >
+          <IconPlus /> Novo Cliente
+        </button>
       </div>
 
-      <div style={styles.card}>
-        <h2 style={styles.h2}>Clientes Cadastrados</h2>
-        {loading && <p>Carregando...</p>}
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th}>Nome</th>
-              <th style={styles.th}>WhatsApp</th>
-              <th style={styles.th}>Email</th>
-              <th style={styles.th}>CPF</th>
-              <th style={styles.th}>Pagamento</th>
-              <th style={styles.th}>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {segurados.map(s => (
-              <>
-                <tr key={s.id}>
-                  {editId === s.id ? (
-                    <>
-                      <td style={styles.td}><input style={{ ...styles.input, marginBottom: 0 }} value={editForm.nome || ''} onChange={e => setEditForm({ ...editForm, nome: e.target.value })} /></td>
-                      <td style={styles.td}><input style={{ ...styles.input, marginBottom: 0 }} value={editForm.whatsapp || ''} onChange={e => setEditForm({ ...editForm, whatsapp: e.target.value })} /></td>
-                      <td style={styles.td}><input style={{ ...styles.input, marginBottom: 0 }} value={editForm.email || ''} onChange={e => setEditForm({ ...editForm, email: e.target.value })} /></td>
-                      <td style={styles.td}><input style={{ ...styles.input, marginBottom: 0 }} value={editForm.cpf || ''} onChange={e => setEditForm({ ...editForm, cpf: e.target.value })} /></td>
-                      <td style={styles.td}>
-                        <select style={{ ...styles.select, marginBottom: 0 }} value={editForm.forma_pagamento || ''} onChange={e => setEditForm({ ...editForm, forma_pagamento: e.target.value })}>
-                          <option>Boleto</option><option>PIX</option><option>Cartão</option><option>Débito Automático</option>
-                        </select>
-                      </td>
-                      <td style={styles.td}>
-                        <button style={styles.btnSuccess} onClick={() => salvarEdicao(s.id)}>Salvar</button>
-                        <button style={styles.btnSecondary} onClick={() => setEditId(null)}>Cancelar</button>
-                      </td>
-                    </>
-                  ) : (
-                    <>
-                      <td style={styles.td}><strong>{s.nome}</strong></td>
-                      <td style={styles.td}>{s.whatsapp}</td>
-                      <td style={styles.td}>{s.email}</td>
-                      <td style={styles.td}>{s.cpf}</td>
-                      <td style={styles.td}>{s.forma_pagamento}</td>
-                      <td style={styles.td}>
-                        <button style={styles.btnSecondary} onClick={() => verDetalhe(s.id)}>Seguros</button>
-                        <button style={{ ...styles.btnSecondary, marginRight: '6px' }} onClick={() => { setEditId(s.id); setEditForm(s) }}>Editar</button>
-                        <button style={styles.btnDanger} onClick={() => excluir(s.id)}>Excluir</button>
-                      </td>
-                    </>
-                  )}
-                </tr>
-                {detalheId === s.id && detalhe && (
-                  <tr key={`det-${s.id}`}>
-                    <td colSpan={6} style={{ ...styles.td, background: '#f0f4f8', padding: '16px' }}>
-                      <strong>Seguros de {detalhe.nome}</strong>
-                      {detalhe.seguros && detalhe.seguros.length === 0 && <p>Nenhum seguro cadastrado.</p>}
-                      {detalhe.seguros && detalhe.seguros.map(seg => (
-                        <div key={seg.id} style={{ background: '#fff', borderRadius: '6px', padding: '12px', marginTop: '8px', border: '1px solid #ddd' }}>
-                          <div><strong>Apólice:</strong> {seg.apolice} | <strong>Companhia:</strong> {seg.companhia} | <strong>Tipo:</strong> {seg.tipo} | <strong>Bem:</strong> {seg.bem_segurado}</div>
-                          <div style={{ marginTop: '8px' }}>
-                            <strong>Parcelas:</strong>
-                            {seg.parcelas && seg.parcelas.length === 0 && <span> Nenhuma</span>}
-                            {seg.parcelas && seg.parcelas.map(p => (
-                              <span key={p.id} style={{ marginLeft: '8px', ...styles.badge(p.status) }}>
-                                {p.data_vencimento} — R$ {Number(p.valor).toFixed(2)} ({p.status})
-                              </span>
-                            ))}
+      {/* Form Card */}
+      {showForm && (
+        <div className="bg-discord-dark rounded-lg border border-discord-light/50 p-5 animate-in">
+          <h3 className="text-base font-semibold text-white mb-4">Adicionar Cliente</h3>
+          <form onSubmit={adicionar} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <input
+              className="bg-discord-darker border border-discord-light rounded-md px-3 py-2 text-sm text-discord-text placeholder-discord-text-muted focus:outline-none focus:border-discord-brand transition-colors"
+              placeholder="Nome *"
+              value={form.nome}
+              onChange={e => setForm({ ...form, nome: e.target.value })}
+            />
+            <input
+              className="bg-discord-darker border border-discord-light rounded-md px-3 py-2 text-sm text-discord-text placeholder-discord-text-muted focus:outline-none focus:border-discord-brand transition-colors"
+              placeholder="WhatsApp"
+              value={form.whatsapp}
+              onChange={e => setForm({ ...form, whatsapp: e.target.value })}
+            />
+            <input
+              className="bg-discord-darker border border-discord-light rounded-md px-3 py-2 text-sm text-discord-text placeholder-discord-text-muted focus:outline-none focus:border-discord-brand transition-colors"
+              placeholder="Email"
+              value={form.email}
+              onChange={e => setForm({ ...form, email: e.target.value })}
+            />
+            <input
+              className="bg-discord-darker border border-discord-light rounded-md px-3 py-2 text-sm text-discord-text placeholder-discord-text-muted focus:outline-none focus:border-discord-brand transition-colors"
+              placeholder="CPF"
+              value={form.cpf}
+              onChange={e => setForm({ ...form, cpf: e.target.value })}
+            />
+            <select
+              className="bg-discord-darker border border-discord-light rounded-md px-3 py-2 text-sm text-discord-text focus:outline-none focus:border-discord-brand transition-colors"
+              value={form.forma_pagamento}
+              onChange={e => setForm({ ...form, forma_pagamento: e.target.value })}
+            >
+              <option>Boleto</option>
+              <option>PIX</option>
+              <option>Cartão</option>
+              <option>Débito Automático</option>
+            </select>
+            <div className="flex items-center gap-2">
+              <button type="submit" className="flex items-center gap-2 px-4 py-2 bg-discord-green hover:bg-green-600 text-white text-sm font-medium rounded-md transition-colors">
+                <IconPlus /> Adicionar
+              </button>
+              <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 bg-discord-light hover:bg-discord-hover text-discord-text text-sm rounded-md transition-colors">
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Table */}
+      <div className="bg-discord-dark rounded-lg border border-discord-light/50 overflow-hidden">
+        {loading && (
+          <div className="flex items-center justify-center py-8 text-discord-text-muted">
+            <svg className="animate-spin h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            Carregando...
+          </div>
+        )}
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-discord-light/50">
+                <th className="text-left px-4 py-3 text-xs font-semibold text-discord-text-muted uppercase tracking-wider">Nome</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-discord-text-muted uppercase tracking-wider">WhatsApp</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-discord-text-muted uppercase tracking-wider">Email</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-discord-text-muted uppercase tracking-wider">CPF</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-discord-text-muted uppercase tracking-wider">Pagamento</th>
+                <th className="text-right px-4 py-3 text-xs font-semibold text-discord-text-muted uppercase tracking-wider">Ações</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-discord-light/30">
+              {segurados.map(s => (
+                <Fragment key={s.id}>
+                  <tr className="hover:bg-discord-hover/50 transition-colors group">
+                    {editId === s.id ? (
+                      <>
+                        <td className="px-4 py-3">
+                          <input className="w-full bg-discord-darker border border-discord-light rounded px-2 py-1 text-sm text-discord-text focus:outline-none focus:border-discord-brand" value={editForm.nome || ''} onChange={e => setEditForm({ ...editForm, nome: e.target.value })} />
+                        </td>
+                        <td className="px-4 py-3">
+                          <input className="w-full bg-discord-darker border border-discord-light rounded px-2 py-1 text-sm text-discord-text focus:outline-none focus:border-discord-brand" value={editForm.whatsapp || ''} onChange={e => setEditForm({ ...editForm, whatsapp: e.target.value })} />
+                        </td>
+                        <td className="px-4 py-3">
+                          <input className="w-full bg-discord-darker border border-discord-light rounded px-2 py-1 text-sm text-discord-text focus:outline-none focus:border-discord-brand" value={editForm.email || ''} onChange={e => setEditForm({ ...editForm, email: e.target.value })} />
+                        </td>
+                        <td className="px-4 py-3">
+                          <input className="w-full bg-discord-darker border border-discord-light rounded px-2 py-1 text-sm text-discord-text focus:outline-none focus:border-discord-brand" value={editForm.cpf || ''} onChange={e => setEditForm({ ...editForm, cpf: e.target.value })} />
+                        </td>
+                        <td className="px-4 py-3">
+                          <select className="bg-discord-darker border border-discord-light rounded px-2 py-1 text-sm text-discord-text focus:outline-none focus:border-discord-brand" value={editForm.forma_pagamento || ''} onChange={e => setEditForm({ ...editForm, forma_pagamento: e.target.value })}>
+                            <option>Boleto</option><option>PIX</option><option>Cartão</option><option>Débito Automático</option>
+                          </select>
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <button onClick={() => salvarEdicao(s.id)} className="p-1.5 rounded bg-discord-green/20 text-green-400 hover:bg-discord-green/40 transition-colors" title="Salvar">
+                              <IconCheck />
+                            </button>
+                            <button onClick={() => setEditId(null)} className="p-1.5 rounded bg-discord-light text-discord-text-muted hover:bg-discord-hover transition-colors" title="Cancelar">
+                              <IconX />
+                            </button>
                           </div>
-                        </div>
-                      ))}
-                    </td>
+                        </td>
+                      </>
+                    ) : (
+                      <>
+                        <td className="px-4 py-3 text-white font-medium">{s.nome}</td>
+                        <td className="px-4 py-3 text-discord-text">{s.whatsapp}</td>
+                        <td className="px-4 py-3 text-discord-text">{s.email}</td>
+                        <td className="px-4 py-3 text-discord-text font-mono text-xs">{s.cpf}</td>
+                        <td className="px-4 py-3">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-discord-brand/20 text-indigo-300 border border-discord-brand/30">
+                            {s.forma_pagamento}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onClick={() => verDetalhe(s.id)} className="p-1.5 rounded text-discord-text-muted hover:text-discord-brand hover:bg-discord-brand/10 transition-colors" title="Ver Seguros">
+                              <IconEye />
+                            </button>
+                            <button onClick={() => { setEditId(s.id); setEditForm(s) }} className="p-1.5 rounded text-discord-text-muted hover:text-discord-yellow hover:bg-discord-yellow/10 transition-colors" title="Editar">
+                              <IconEdit />
+                            </button>
+                            <button onClick={() => excluir(s.id)} className="p-1.5 rounded text-discord-text-muted hover:text-discord-red hover:bg-discord-red/10 transition-colors" title="Excluir">
+                              <IconTrash />
+                            </button>
+                          </div>
+                        </td>
+                      </>
+                    )}
                   </tr>
-                )}
-              </>
-            ))}
-          </tbody>
-        </table>
+
+                  {detalheId === s.id && detalhe && (
+                    <tr>
+                      <td colSpan={6} className="px-4 py-4 bg-discord-darker/50">
+                        <div className="flex items-center gap-2 mb-3">
+                          <IconChevron open={true} />
+                          <span className="text-sm font-semibold text-white">Seguros de {detalhe.nome}</span>
+                        </div>
+                        {detalhe.seguros && detalhe.seguros.length === 0 && (
+                          <p className="text-sm text-discord-text-muted italic pl-5">Nenhum seguro cadastrado.</p>
+                        )}
+                        <div className="space-y-2 pl-5">
+                          {detalhe.seguros && detalhe.seguros.map(seg => (
+                            <div key={seg.id} className="bg-discord-dark rounded-lg p-3 border border-discord-light/30">
+                              <div className="flex flex-wrap gap-4 text-sm text-discord-text">
+                                <span><span className="text-discord-text-muted">Apólice:</span> <span className="text-white font-medium">{seg.apolice}</span></span>
+                                <span><span className="text-discord-text-muted">Companhia:</span> {seg.companhia}</span>
+                                <span><span className="text-discord-text-muted">Tipo:</span> {seg.tipo}</span>
+                                <span><span className="text-discord-text-muted">Bem:</span> {seg.bem_segurado}</span>
+                              </div>
+                              {seg.parcelas && seg.parcelas.length > 0 && (
+                                <div className="mt-2 flex flex-wrap gap-2">
+                                  {seg.parcelas.map(p => (
+                                    <StatusBadge key={p.id} status={p.status} />
+                                  ))}
+                                </div>
+                              )}
+                              {seg.parcelas && seg.parcelas.length > 0 && (
+                                <div className="mt-2 flex flex-wrap gap-2">
+                                  {seg.parcelas.map(p => (
+                                    <span key={p.id} className="text-xs text-discord-text-muted">
+                                      {p.data_vencimento} — R$ {Number(p.valor).toFixed(2)}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
+              ))}
+              {segurados.length === 0 && !loading && (
+                <tr>
+                  <td colSpan={6} className="px-4 py-12 text-center text-discord-text-muted">
+                    Nenhum cliente cadastrado.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )
@@ -175,10 +361,11 @@ function SegurosTab() {
   const [seguros, setSeguros] = useState([])
   const [segurados, setSegurados] = useState([])
   const [form, setForm] = useState({ segurado_id: '', companhia: '', tipo: '', apolice: '', bem_segurado: '' })
+  const [showForm, setShowForm] = useState(false)
 
   useEffect(() => {
-    fetch('/api/seguros').then(r => r.json()).then(d => setSeguros(d || []))
-    fetch('/api/segurados').then(r => r.json()).then(d => setSegurados(d || []))
+    fetch('/api/seguros').then(r => r.json()).then(d => setSeguros(Array.isArray(d) ? d : []))
+    fetch('/api/segurados').then(r => r.json()).then(d => setSegurados(Array.isArray(d) ? d : []))
   }, [])
 
   async function adicionar(e) {
@@ -186,86 +373,155 @@ function SegurosTab() {
     if (!form.segurado_id || !form.apolice) return alert('Segurado e Apólice são obrigatórios')
     await fetch('/api/seguros', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, segurado_id: parseInt(form.segurado_id) }) })
     setForm({ segurado_id: '', companhia: '', tipo: '', apolice: '', bem_segurado: '' })
-    fetch('/api/seguros').then(r => r.json()).then(d => setSeguros(d || []))
+    setShowForm(false)
+    fetch('/api/seguros').then(r => r.json()).then(d => setSeguros(Array.isArray(d) ? d : []))
   }
 
   async function excluir(id) {
     if (!confirm('Excluir este seguro?')) return
     await fetch(`/api/seguros/${id}`, { method: 'DELETE' })
-    fetch('/api/seguros').then(r => r.json()).then(d => setSeguros(d || []))
+    fetch('/api/seguros').then(r => r.json()).then(d => setSeguros(Array.isArray(d) ? d : []))
   }
 
   return (
-    <div>
-      <div style={styles.card}>
-        <h2 style={styles.h2}>Adicionar Seguro</h2>
-        <form onSubmit={adicionar}>
-          <select style={styles.select} value={form.segurado_id} onChange={e => setForm({ ...form, segurado_id: e.target.value })}>
-            <option value="">Selecione o cliente *</option>
-            {segurados.map(s => <option key={s.id} value={s.id}>{s.nome}</option>)}
-          </select>
-          <input style={styles.input} placeholder="Apólice *" value={form.apolice} onChange={e => setForm({ ...form, apolice: e.target.value })} />
-          <input style={styles.input} placeholder="Companhia" value={form.companhia} onChange={e => setForm({ ...form, companhia: e.target.value })} />
-          <input style={styles.input} placeholder="Tipo (Auto, Vida...)" value={form.tipo} onChange={e => setForm({ ...form, tipo: e.target.value })} />
-          <input style={styles.input} placeholder="Bem Segurado" value={form.bem_segurado} onChange={e => setForm({ ...form, bem_segurado: e.target.value })} />
-          <button style={styles.btn} type="submit">Adicionar</button>
-        </form>
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-white">Seguros</h2>
+          <p className="text-sm text-discord-text-muted">{seguros.length} seguro(s) cadastrado(s)</p>
+        </div>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="flex items-center gap-2 px-4 py-2 bg-discord-brand hover:bg-discord-brand-hover text-white text-sm font-medium rounded-md transition-colors"
+        >
+          <IconPlus /> Novo Seguro
+        </button>
       </div>
 
-      <div style={styles.card}>
-        <h2 style={styles.h2}>Seguros Cadastrados</h2>
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th}>ID</th>
-              <th style={styles.th}>Cliente</th>
-              <th style={styles.th}>Apólice</th>
-              <th style={styles.th}>Companhia</th>
-              <th style={styles.th}>Tipo</th>
-              <th style={styles.th}>Bem Segurado</th>
-              <th style={styles.th}>Parcelas</th>
-              <th style={styles.th}>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {seguros.map(s => {
-              const segurado = segurados.find(sg => sg.id === s.segurado_id)
-              return (
-                <tr key={s.id}>
-                  <td style={styles.td}>{s.id}</td>
-                  <td style={styles.td}>{segurado ? segurado.nome : s.segurado_id}</td>
-                  <td style={styles.td}>{s.apolice}</td>
-                  <td style={styles.td}>{s.companhia}</td>
-                  <td style={styles.td}>{s.tipo}</td>
-                  <td style={styles.td}>{s.bem_segurado}</td>
-                  <td style={styles.td}>{s.parcelas ? s.parcelas.length : 0}</td>
-                  <td style={styles.td}><button style={styles.btnDanger} onClick={() => excluir(s.id)}>Excluir</button></td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+      {/* Form Card */}
+      {showForm && (
+        <div className="bg-discord-dark rounded-lg border border-discord-light/50 p-5">
+          <h3 className="text-base font-semibold text-white mb-4">Adicionar Seguro</h3>
+          <form onSubmit={adicionar} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <select
+              className="bg-discord-darker border border-discord-light rounded-md px-3 py-2 text-sm text-discord-text focus:outline-none focus:border-discord-brand transition-colors"
+              value={form.segurado_id}
+              onChange={e => setForm({ ...form, segurado_id: e.target.value })}
+            >
+              <option value="">Selecione o cliente *</option>
+              {segurados.map(s => <option key={s.id} value={s.id}>{s.nome}</option>)}
+            </select>
+            <input
+              className="bg-discord-darker border border-discord-light rounded-md px-3 py-2 text-sm text-discord-text placeholder-discord-text-muted focus:outline-none focus:border-discord-brand transition-colors"
+              placeholder="Apólice *"
+              value={form.apolice}
+              onChange={e => setForm({ ...form, apolice: e.target.value })}
+            />
+            <input
+              className="bg-discord-darker border border-discord-light rounded-md px-3 py-2 text-sm text-discord-text placeholder-discord-text-muted focus:outline-none focus:border-discord-brand transition-colors"
+              placeholder="Companhia"
+              value={form.companhia}
+              onChange={e => setForm({ ...form, companhia: e.target.value })}
+            />
+            <input
+              className="bg-discord-darker border border-discord-light rounded-md px-3 py-2 text-sm text-discord-text placeholder-discord-text-muted focus:outline-none focus:border-discord-brand transition-colors"
+              placeholder="Tipo (Auto, Vida...)"
+              value={form.tipo}
+              onChange={e => setForm({ ...form, tipo: e.target.value })}
+            />
+            <input
+              className="bg-discord-darker border border-discord-light rounded-md px-3 py-2 text-sm text-discord-text placeholder-discord-text-muted focus:outline-none focus:border-discord-brand transition-colors"
+              placeholder="Bem Segurado"
+              value={form.bem_segurado}
+              onChange={e => setForm({ ...form, bem_segurado: e.target.value })}
+            />
+            <div className="flex items-center gap-2">
+              <button type="submit" className="flex items-center gap-2 px-4 py-2 bg-discord-green hover:bg-green-600 text-white text-sm font-medium rounded-md transition-colors">
+                <IconPlus /> Adicionar
+              </button>
+              <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 bg-discord-light hover:bg-discord-hover text-discord-text text-sm rounded-md transition-colors">
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {seguros.map(s => {
+          const segurado = segurados.find(sg => sg.id === s.segurado_id)
+          const parcelasCount = s.parcelas ? s.parcelas.length : 0
+          const pendentes = s.parcelas ? s.parcelas.filter(p => p.status !== 'Pago').length : 0
+          return (
+            <div key={s.id} className="bg-discord-dark rounded-lg border border-discord-light/50 p-4 hover:border-discord-brand/50 transition-colors group">
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <span className="text-xs text-discord-text-muted">#{s.id}</span>
+                  <h3 className="text-white font-semibold">{s.apolice}</h3>
+                </div>
+                <button
+                  onClick={() => excluir(s.id)}
+                  className="p-1.5 rounded text-discord-text-muted hover:text-discord-red hover:bg-discord-red/10 transition-colors opacity-0 group-hover:opacity-100"
+                  title="Excluir"
+                >
+                  <IconTrash />
+                </button>
+              </div>
+              <div className="space-y-1.5 text-sm">
+                <div className="flex items-center gap-2 text-discord-text">
+                  <IconUsers />
+                  <span>{segurado ? segurado.nome : `ID ${s.segurado_id}`}</span>
+                </div>
+                {s.companhia && (
+                  <p className="text-discord-text-muted"><span className="text-discord-text">Companhia:</span> {s.companhia}</p>
+                )}
+                {s.tipo && (
+                  <p className="text-discord-text-muted"><span className="text-discord-text">Tipo:</span> {s.tipo}</p>
+                )}
+                {s.bem_segurado && (
+                  <p className="text-discord-text-muted"><span className="text-discord-text">Bem:</span> {s.bem_segurado}</p>
+                )}
+              </div>
+              <div className="mt-3 pt-3 border-t border-discord-light/30 flex items-center justify-between">
+                <span className="text-xs text-discord-text-muted">{parcelasCount} parcela(s)</span>
+                {pendentes > 0 && (
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-discord-yellow/20 text-yellow-400 border border-discord-yellow/30">
+                    {pendentes} pendente(s)
+                  </span>
+                )}
+              </div>
+            </div>
+          )
+        })}
+        {seguros.length === 0 && (
+          <div className="col-span-full text-center py-12 text-discord-text-muted bg-discord-dark rounded-lg border border-discord-light/50">
+            Nenhum seguro cadastrado.
+          </div>
+        )}
       </div>
     </div>
   )
 }
 
-// ── Tab Parcelas ──────────────────────────────────────────────────────────────
+// ── Tab Parcelas ─────────────────────────────────────────────────────────────
 function ParcelasTab() {
   const [parcelas, setParcelas] = useState([])
   const [seguros, setSeguros] = useState([])
   const [form, setForm] = useState({ seguro_id: '', data_vencimento: '', valor: '', status: 'Pendente' })
   const [filtro, setFiltro] = useState('Todos')
+  const [showForm, setShowForm] = useState(false)
 
   useEffect(() => {
     fetchParcelas()
-    fetch('/api/seguros').then(r => r.json()).then(d => setSeguros(d || []))
+    fetch('/api/seguros').then(r => r.json()).then(d => setSeguros(Array.isArray(d) ? d : []))
   }, [])
 
   async function fetchParcelas() {
     const r = await fetch('/api/parcelas')
     const d = await r.json()
-    setParcelas(d || [])
+    setParcelas(Array.isArray(d) ? d : [])
   }
 
   async function adicionar(e) {
@@ -273,6 +529,7 @@ function ParcelasTab() {
     if (!form.seguro_id || !form.data_vencimento || !form.valor) return alert('Preencha todos os campos obrigatórios')
     await fetch('/api/parcelas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, seguro_id: parseInt(form.seguro_id), valor: parseFloat(form.valor) }) })
     setForm({ seguro_id: '', data_vencimento: '', valor: '', status: 'Pendente' })
+    setShowForm(false)
     fetchParcelas()
   }
 
@@ -293,90 +550,265 @@ function ParcelasTab() {
     .filter(p => filtro === 'Todos' || p.status === filtro)
 
   const totalPendente = parcelas.filter(p => p.status !== 'Pago').reduce((acc, p) => acc + Number(p.valor), 0)
+  const totalPago = parcelas.filter(p => p.status === 'Pago').reduce((acc, p) => acc + Number(p.valor), 0)
+  const totalVencido = parcelas
+    .filter(p => p.status !== 'Pago' && p.data_vencimento < hoje)
+    .reduce((acc, p) => acc + Number(p.valor), 0)
+
+  const filters = [
+    { key: 'Todos', label: 'Todos', count: parcelas.length },
+    { key: 'Pendente', label: 'Pendente', count: parcelas.filter(p => p.status !== 'Pago' && p.data_vencimento >= hoje).length },
+    { key: 'Vencido', label: 'Vencido', count: parcelas.filter(p => p.status !== 'Pago' && p.data_vencimento < hoje).length },
+    { key: 'Pago', label: 'Pago', count: parcelas.filter(p => p.status === 'Pago').length },
+  ]
 
   return (
-    <div>
-      <div style={styles.card}>
-        <h2 style={styles.h2}>Adicionar Parcela</h2>
-        <form onSubmit={adicionar}>
-          <select style={styles.select} value={form.seguro_id} onChange={e => setForm({ ...form, seguro_id: e.target.value })}>
-            <option value="">Selecione o Seguro *</option>
-            {seguros.map(s => <option key={s.id} value={s.id}>#{s.id} — {s.apolice} ({s.companhia})</option>)}
-          </select>
-          <input style={styles.input} type="date" value={form.data_vencimento} onChange={e => setForm({ ...form, data_vencimento: e.target.value })} />
-          <input style={styles.input} placeholder="Valor (R$) *" value={form.valor} onChange={e => setForm({ ...form, valor: e.target.value })} />
-          <select style={styles.select} value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
-            <option>Pendente</option><option>Pago</option><option>Vencido</option>
-          </select>
-          <button style={styles.btn} type="submit">Adicionar</button>
-        </form>
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-white">Parcelas</h2>
+          <p className="text-sm text-discord-text-muted">{parcelas.length} parcela(s)</p>
+        </div>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="flex items-center gap-2 px-4 py-2 bg-discord-brand hover:bg-discord-brand-hover text-white text-sm font-medium rounded-md transition-colors"
+        >
+          <IconPlus /> Nova Parcela
+        </button>
       </div>
 
-      <div style={styles.card}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <h2 style={{ ...styles.h2, marginBottom: 0 }}>Parcelas</h2>
-          <span style={{ fontSize: '14px', color: '#c62828', fontWeight: '600' }}>Total em Aberto: R$ {totalPendente.toFixed(2)}</span>
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="bg-discord-dark rounded-lg border border-discord-light/50 p-4">
+          <p className="text-xs text-discord-text-muted uppercase tracking-wider mb-1">Em Aberto</p>
+          <p className="text-2xl font-bold text-discord-yellow">R$ {totalPendente.toFixed(2)}</p>
         </div>
-        <div style={{ marginBottom: '12px' }}>
-          {['Todos', 'Pendente', 'Vencido', 'Pago'].map(f => (
-            <button key={f} style={{ ...styles.tab(filtro === f), marginRight: '8px' }} onClick={() => setFiltro(f)}>{f}</button>
-          ))}
+        <div className="bg-discord-dark rounded-lg border border-discord-light/50 p-4">
+          <p className="text-xs text-discord-text-muted uppercase tracking-wider mb-1">Vencido</p>
+          <p className="text-2xl font-bold text-discord-red">R$ {totalVencido.toFixed(2)}</p>
         </div>
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th}>Seguro ID</th>
-              <th style={styles.th}>Vencimento</th>
-              <th style={styles.th}>Valor</th>
-              <th style={styles.th}>Status</th>
-              <th style={styles.th}>Data Pagamento</th>
-              <th style={styles.th}>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {parcelasFiltradas.map(p => (
-              <tr key={p.id}>
-                <td style={styles.td}>{p.seguro_id}</td>
-                <td style={styles.td}>{p.data_vencimento}</td>
-                <td style={styles.td}>R$ {Number(p.valor).toFixed(2)}</td>
-                <td style={styles.td}><span style={styles.badge(p.status)}>{p.status}</span></td>
-                <td style={styles.td}>{p.data_pagamento || '—'}</td>
-                <td style={styles.td}>
-                  {p.status !== 'Pago' && <button style={styles.btnSuccess} onClick={() => marcarPago(p)}>✓ Pago</button>}
-                  <button style={styles.btnDanger} onClick={() => excluir(p.id)}>Excluir</button>
-                </td>
+        <div className="bg-discord-dark rounded-lg border border-discord-light/50 p-4">
+          <p className="text-xs text-discord-text-muted uppercase tracking-wider mb-1">Total Pago</p>
+          <p className="text-2xl font-bold text-discord-green">R$ {totalPago.toFixed(2)}</p>
+        </div>
+      </div>
+
+      {/* Form Card */}
+      {showForm && (
+        <div className="bg-discord-dark rounded-lg border border-discord-light/50 p-5">
+          <h3 className="text-base font-semibold text-white mb-4">Adicionar Parcela</h3>
+          <form onSubmit={adicionar} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            <select
+              className="bg-discord-darker border border-discord-light rounded-md px-3 py-2 text-sm text-discord-text focus:outline-none focus:border-discord-brand transition-colors"
+              value={form.seguro_id}
+              onChange={e => setForm({ ...form, seguro_id: e.target.value })}
+            >
+              <option value="">Selecione o Seguro *</option>
+              {seguros.map(s => <option key={s.id} value={s.id}>#{s.id} — {s.apolice} ({s.companhia})</option>)}
+            </select>
+            <input
+              className="bg-discord-darker border border-discord-light rounded-md px-3 py-2 text-sm text-discord-text focus:outline-none focus:border-discord-brand transition-colors"
+              type="date"
+              value={form.data_vencimento}
+              onChange={e => setForm({ ...form, data_vencimento: e.target.value })}
+            />
+            <input
+              className="bg-discord-darker border border-discord-light rounded-md px-3 py-2 text-sm text-discord-text placeholder-discord-text-muted focus:outline-none focus:border-discord-brand transition-colors"
+              placeholder="Valor (R$) *"
+              value={form.valor}
+              onChange={e => setForm({ ...form, valor: e.target.value })}
+            />
+            <div className="flex items-center gap-2">
+              <select
+                className="bg-discord-darker border border-discord-light rounded-md px-3 py-2 text-sm text-discord-text focus:outline-none focus:border-discord-brand transition-colors"
+                value={form.status}
+                onChange={e => setForm({ ...form, status: e.target.value })}
+              >
+                <option>Pendente</option><option>Pago</option><option>Vencido</option>
+              </select>
+              <button type="submit" className="flex items-center gap-2 px-4 py-2 bg-discord-green hover:bg-green-600 text-white text-sm font-medium rounded-md transition-colors whitespace-nowrap">
+                <IconPlus /> Adicionar
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Filters */}
+      <div className="flex items-center gap-2">
+        {filters.map(f => (
+          <button
+            key={f.key}
+            onClick={() => setFiltro(f.key)}
+            className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+              filtro === f.key
+                ? 'bg-discord-brand text-white'
+                : 'bg-discord-dark text-discord-text-muted hover:bg-discord-hover hover:text-discord-text'
+            }`}
+          >
+            {f.label}
+            <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
+              filtro === f.key ? 'bg-white/20' : 'bg-discord-light'
+            }`}>
+              {f.count}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {/* Table */}
+      <div className="bg-discord-dark rounded-lg border border-discord-light/50 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-discord-light/50">
+                <th className="text-left px-4 py-3 text-xs font-semibold text-discord-text-muted uppercase tracking-wider">Seguro</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-discord-text-muted uppercase tracking-wider">Vencimento</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-discord-text-muted uppercase tracking-wider">Valor</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-discord-text-muted uppercase tracking-wider">Status</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-discord-text-muted uppercase tracking-wider">Data Pagamento</th>
+                <th className="text-right px-4 py-3 text-xs font-semibold text-discord-text-muted uppercase tracking-wider">Ações</th>
               </tr>
-            ))}
-            {parcelasFiltradas.length === 0 && (
-              <tr><td colSpan={6} style={{ ...styles.td, textAlign: 'center', color: '#888' }}>Nenhuma parcela encontrada.</td></tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-discord-light/30">
+              {parcelasFiltradas.map(p => (
+                <tr key={p.id} className="hover:bg-discord-hover/50 transition-colors group">
+                  <td className="px-4 py-3 text-discord-text font-mono text-xs">#{p.seguro_id}</td>
+                  <td className="px-4 py-3 text-discord-text">{p.data_vencimento}</td>
+                  <td className="px-4 py-3 text-white font-semibold">R$ {Number(p.valor).toFixed(2)}</td>
+                  <td className="px-4 py-3"><StatusBadge status={p.status} /></td>
+                  <td className="px-4 py-3 text-discord-text-muted">{p.data_pagamento || '—'}</td>
+                  <td className="px-4 py-3 text-right">
+                    <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {p.status !== 'Pago' && (
+                        <button
+                          onClick={() => marcarPago(p)}
+                          className="p-1.5 rounded text-discord-text-muted hover:text-discord-green hover:bg-discord-green/10 transition-colors"
+                          title="Marcar como Pago"
+                        >
+                          <IconCheck />
+                        </button>
+                      )}
+                      <button
+                        onClick={() => excluir(p.id)}
+                        className="p-1.5 rounded text-discord-text-muted hover:text-discord-red hover:bg-discord-red/10 transition-colors"
+                        title="Excluir"
+                      >
+                        <IconTrash />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {parcelasFiltradas.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-4 py-12 text-center text-discord-text-muted">
+                    Nenhuma parcela encontrada.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )
 }
 
-// ── App Principal ──────────────────────────────────────────────────────────────
+// ── App Principal ────────────────────────────────────────────────────────────
 export default function Home() {
   const [tab, setTab] = useState('segurados')
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+
+  const navItems = [
+    { key: 'segurados', label: 'Clientes', icon: <IconUsers /> },
+    { key: 'seguros', label: 'Seguros', icon: <IconShield /> },
+    { key: 'parcelas', label: 'Parcelas', icon: <IconCash /> },
+  ]
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <h1 style={{ margin: 0, fontSize: '22px' }}>🗂️ Controle de Boletos</h1>
-        <p style={{ margin: '4px 0 0', fontSize: '13px', opacity: 0.8 }}>Sistema de controle de seguros e parcelas</p>
-      </div>
+    <div className="flex h-screen bg-discord-main text-discord-text">
+      {/* Sidebar */}
+      <aside className={`flex flex-col bg-discord-dark border-r border-discord-darker transition-all ${sidebarCollapsed ? 'w-[72px]' : 'w-60'}`}>
+        {/* Logo */}
+        <div className="h-12 flex items-center px-4 border-b border-discord-darker shadow-sm">
+          {!sidebarCollapsed && (
+            <h1 className="text-base font-bold text-white truncate">Controle de Boletos</h1>
+          )}
+          <button
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            className={`p-1 rounded text-discord-text-muted hover:text-white transition-colors ${sidebarCollapsed ? 'mx-auto' : 'ml-auto'}`}
+            title={sidebarCollapsed ? 'Expandir' : 'Recolher'}
+          >
+            <svg className={`w-4 h-4 transition-transform ${sidebarCollapsed ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+            </svg>
+          </button>
+        </div>
 
-      <div style={styles.tabBar}>
-        <button style={styles.tab(tab === 'segurados')} onClick={() => setTab('segurados')}>👤 Clientes</button>
-        <button style={styles.tab(tab === 'seguros')} onClick={() => setTab('seguros')}>📋 Seguros</button>
-        <button style={styles.tab(tab === 'parcelas')} onClick={() => setTab('parcelas')}>💰 Parcelas</button>
-      </div>
+        {/* Category */}
+        {!sidebarCollapsed && (
+          <div className="px-4 pt-4 pb-1">
+            <p className="text-[11px] font-bold text-discord-text-muted uppercase tracking-wider">Gerenciamento</p>
+          </div>
+        )}
 
-      {tab === 'segurados' && <SeguradosTab />}
-      {tab === 'seguros' && <SegurosTab />}
-      {tab === 'parcelas' && <ParcelasTab />}
+        {/* Nav Items */}
+        <nav className="flex-1 px-2 py-2 space-y-0.5">
+          {navItems.map(item => (
+            <button
+              key={item.key}
+              onClick={() => setTab(item.key)}
+              className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                tab === item.key
+                  ? 'bg-discord-light text-white'
+                  : 'text-discord-text-muted hover:bg-discord-hover hover:text-discord-text'
+              } ${sidebarCollapsed ? 'justify-center' : ''}`}
+              title={sidebarCollapsed ? item.label : undefined}
+            >
+              <span className={tab === item.key ? 'text-white' : ''}>{item.icon}</span>
+              {!sidebarCollapsed && item.label}
+            </button>
+          ))}
+        </nav>
+
+        {/* Footer */}
+        <div className="p-3 border-t border-discord-darker">
+          <div className={`flex items-center gap-2 ${sidebarCollapsed ? 'justify-center' : ''}`}>
+            <div className="w-8 h-8 rounded-full bg-discord-brand flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+              CB
+            </div>
+            {!sidebarCollapsed && (
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-white truncate">Corretor</p>
+                <p className="text-[11px] text-discord-green">Online</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 flex flex-col overflow-hidden">
+        {/* Top Bar */}
+        <header className="h-12 flex items-center px-4 border-b border-discord-darker shadow-sm bg-discord-main">
+          <div className="flex items-center gap-2 text-discord-text-muted">
+            {navItems.find(n => n.key === tab)?.icon}
+            <span className="text-white font-semibold">{navItems.find(n => n.key === tab)?.label}</span>
+          </div>
+          <div className="ml-auto flex items-center gap-3">
+            <span className="text-xs text-discord-text-muted">Sistema de controle de seguros e parcelas</span>
+          </div>
+        </header>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-6">
+          {tab === 'segurados' && <SeguradosTab />}
+          {tab === 'seguros' && <SegurosTab />}
+          {tab === 'parcelas' && <ParcelasTab />}
+        </div>
+      </main>
     </div>
   )
 }
