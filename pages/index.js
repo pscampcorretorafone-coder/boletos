@@ -113,7 +113,7 @@ function SeguradosTab() {
     setLoading(true)
     const r = await fetch('/api/segurados')
     const d = await r.json()
-    setSegurados(d || [])
+    setSegurados(Array.isArray(d) ? d : [])
     setLoading(false)
   }
 
@@ -364,8 +364,8 @@ function SegurosTab() {
   const [showForm, setShowForm] = useState(false)
 
   useEffect(() => {
-    fetch('/api/seguros').then(r => r.json()).then(d => setSeguros(d || []))
-    fetch('/api/segurados').then(r => r.json()).then(d => setSegurados(d || []))
+    fetch('/api/seguros').then(r => r.json()).then(d => setSeguros(Array.isArray(d) ? d : []))
+    fetch('/api/segurados').then(r => r.json()).then(d => setSegurados(Array.isArray(d) ? d : []))
   }, [])
 
   async function adicionar(e) {
@@ -374,13 +374,13 @@ function SegurosTab() {
     await fetch('/api/seguros', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, segurado_id: parseInt(form.segurado_id) }) })
     setForm({ segurado_id: '', companhia: '', tipo: '', apolice: '', bem_segurado: '' })
     setShowForm(false)
-    fetch('/api/seguros').then(r => r.json()).then(d => setSeguros(d || []))
+    fetch('/api/seguros').then(r => r.json()).then(d => setSeguros(Array.isArray(d) ? d : []))
   }
 
   async function excluir(id) {
     if (!confirm('Excluir este seguro?')) return
     await fetch(`/api/seguros/${id}`, { method: 'DELETE' })
-    fetch('/api/seguros').then(r => r.json()).then(d => setSeguros(d || []))
+    fetch('/api/seguros').then(r => r.json()).then(d => setSeguros(Array.isArray(d) ? d : []))
   }
 
   return (
@@ -515,13 +515,13 @@ function ParcelasTab() {
 
   useEffect(() => {
     fetchParcelas()
-    fetch('/api/seguros').then(r => r.json()).then(d => setSeguros(d || []))
+    fetch('/api/seguros').then(r => r.json()).then(d => setSeguros(Array.isArray(d) ? d : []))
   }, [])
 
   async function fetchParcelas() {
     const r = await fetch('/api/parcelas')
     const d = await r.json()
-    setParcelas(d || [])
+    setParcelas(Array.isArray(d) ? d : [])
   }
 
   async function adicionar(e) {
