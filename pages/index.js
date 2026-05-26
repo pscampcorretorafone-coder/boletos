@@ -1,29 +1,141 @@
 import { useEffect, useState } from 'react'
+import {
+  UserGroupIcon,
+  ShieldCheckIcon,
+  CurrencyDollarIcon,
+  PlusIcon,
+  TrashIcon,
+  PencilSquareIcon,
+  CheckCircleIcon,
+  XMarkIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+  MagnifyingGlassIcon,
+} from '@heroicons/react/24/outline'
 
-const styles = {
-  container: { padding: '24px', fontFamily: 'Arial, sans-serif', maxWidth: '1100px', margin: '0 auto', background: '#f5f7fa', minHeight: '100vh' },
-  header: { background: '#1a3c5e', color: '#fff', padding: '16px 24px', borderRadius: '8px', marginBottom: '24px' },
-  card: { background: '#fff', borderRadius: '8px', padding: '20px', marginBottom: '20px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)' },
-  h2: { margin: '0 0 16px 0', color: '#1a3c5e', fontSize: '18px' },
-  input: { padding: '8px 12px', border: '1px solid #ccc', borderRadius: '6px', marginRight: '8px', marginBottom: '8px', fontSize: '14px', minWidth: '160px' },
-  btn: { padding: '8px 16px', background: '#1a3c5e', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', marginRight: '8px' },
-  btnDanger: { padding: '6px 12px', background: '#e53935', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' },
-  btnSuccess: { padding: '6px 12px', background: '#2e7d32', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', marginRight: '6px' },
-  btnSecondary: { padding: '6px 12px', background: '#546e7a', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', marginRight: '6px' },
-  table: { width: '100%', borderCollapse: 'collapse', fontSize: '14px' },
-  th: { background: '#e8edf2', padding: '10px 12px', textAlign: 'left', fontWeight: '600', color: '#333', borderBottom: '2px solid #ccc' },
-  td: { padding: '9px 12px', borderBottom: '1px solid #eee', verticalAlign: 'middle' },
-  badge: (status) => ({
-    padding: '2px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: '600',
-    background: status === 'Pago' ? '#c8e6c9' : status === 'Vencido' ? '#ffcdd2' : '#fff9c4',
-    color: status === 'Pago' ? '#2e7d32' : status === 'Vencido' ? '#c62828' : '#f57f17'
-  }),
-  select: { padding: '8px 12px', border: '1px solid #ccc', borderRadius: '6px', marginRight: '8px', marginBottom: '8px', fontSize: '14px' },
-  tabBar: { display: 'flex', gap: '8px', marginBottom: '20px' },
-  tab: (active) => ({
-    padding: '10px 20px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: active ? '700' : '400',
-    background: active ? '#1a3c5e' : '#dce3ea', color: active ? '#fff' : '#333'
-  })
+const NAV_ITEMS = [
+  { key: 'segurados', label: 'Clientes', icon: UserGroupIcon },
+  { key: 'seguros', label: 'Seguros', icon: ShieldCheckIcon },
+  { key: 'parcelas', label: 'Parcelas', icon: CurrencyDollarIcon },
+]
+
+// ── Sidebar ────────────────────────────────────────────────────────────────────
+function Sidebar({ tab, setTab }) {
+  return (
+    <aside className="hidden md:flex flex-col w-60 bg-discord-800 border-r border-discord-600/50 h-screen sticky top-0">
+      <div className="px-4 h-14 flex items-center border-b border-discord-600/50 shadow-sm">
+        <h1 className="text-base font-semibold text-white tracking-tight truncate">
+          Controle de Boletos
+        </h1>
+      </div>
+
+      <div className="px-2 pt-4 pb-2">
+        <span className="px-2 text-[11px] font-semibold uppercase tracking-wider text-discord-400">
+          Gerenciamento
+        </span>
+      </div>
+
+      <nav className="flex-1 px-2 space-y-0.5">
+        {NAV_ITEMS.map(({ key, label, icon: Icon }) => (
+          <button
+            key={key}
+            onClick={() => setTab(key)}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ${
+              tab === key
+                ? 'bg-discord-600/60 text-white'
+                : 'text-discord-300 hover:bg-discord-600/30 hover:text-discord-100'
+            }`}
+          >
+            <Icon className="w-5 h-5 flex-shrink-0" />
+            {label}
+          </button>
+        ))}
+      </nav>
+
+      <div className="p-3 border-t border-discord-600/50">
+        <div className="flex items-center gap-2 px-2 py-1.5 rounded-md bg-discord-900/50">
+          <div className="w-8 h-8 rounded-full bg-discord-blurple flex items-center justify-center text-white text-xs font-bold">
+            CB
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-discord-100 truncate">Corretor</p>
+            <p className="text-[10px] text-discord-400">Online</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+  )
+}
+
+// ── Mobile Header ──────────────────────────────────────────────────────────────
+function MobileHeader({ tab, setTab }) {
+  return (
+    <div className="md:hidden">
+      <div className="bg-discord-800 border-b border-discord-600/50 px-4 py-3">
+        <h1 className="text-base font-semibold text-white">Controle de Boletos</h1>
+      </div>
+      <div className="bg-discord-800/80 border-b border-discord-600/50 px-2 py-2 flex gap-1 overflow-x-auto">
+        {NAV_ITEMS.map(({ key, label, icon: Icon }) => (
+          <button
+            key={key}
+            onClick={() => setTab(key)}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${
+              tab === key
+                ? 'bg-discord-blurple text-white'
+                : 'text-discord-300 hover:bg-discord-600/30'
+            }`}
+          >
+            <Icon className="w-4 h-4" />
+            {label}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ── Page Header ────────────────────────────────────────────────────────────────
+function PageHeader({ icon: Icon, title, subtitle, children }) {
+  return (
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-discord-blurple/20 flex items-center justify-center">
+          <Icon className="w-5 h-5 text-discord-blurple" />
+        </div>
+        <div>
+          <h2 className="text-lg font-semibold text-white">{title}</h2>
+          {subtitle && <p className="text-xs text-discord-400 mt-0.5">{subtitle}</p>}
+        </div>
+      </div>
+      {children}
+    </div>
+  )
+}
+
+// ── Badge Component ────────────────────────────────────────────────────────────
+function StatusBadge({ status }) {
+  const config = {
+    Pago: 'bg-discord-green/20 text-green-400 border-green-500/30',
+    Vencido: 'bg-discord-red/20 text-red-400 border-red-500/30',
+    Pendente: 'bg-discord-yellow/20 text-yellow-400 border-yellow-500/30',
+  }
+  return (
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${config[status] || config.Pendente}`}>
+      {status}
+    </span>
+  )
+}
+
+// ── Empty State ────────────────────────────────────────────────────────────────
+function EmptyState({ message }) {
+  return (
+    <div className="text-center py-12">
+      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-discord-600/30 flex items-center justify-center">
+        <MagnifyingGlassIcon className="w-8 h-8 text-discord-400" />
+      </div>
+      <p className="text-discord-400 text-sm">{message}</p>
+    </div>
+  )
 }
 
 // ── Tab Segurados ──────────────────────────────────────────────────────────────
@@ -35,6 +147,7 @@ function SeguradosTab() {
   const [editForm, setEditForm] = useState({})
   const [detalheId, setDetalheId] = useState(null)
   const [detalhe, setDetalhe] = useState(null)
+  const [showForm, setShowForm] = useState(false)
 
   useEffect(() => { fetchSegurados() }, [])
 
@@ -51,6 +164,7 @@ function SeguradosTab() {
     if (!form.nome) return alert('Nome é obrigatório')
     await fetch('/api/segurados', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })
     setForm({ nome: '', whatsapp: '', email: '', cpf: '', forma_pagamento: 'Boleto' })
+    setShowForm(false)
     fetchSegurados()
   }
 
@@ -75,96 +189,162 @@ function SeguradosTab() {
   }
 
   return (
-    <div>
-      <div style={styles.card}>
-        <h2 style={styles.h2}>Adicionar Cliente</h2>
-        <form onSubmit={adicionar}>
-          <input style={styles.input} placeholder="Nome *" value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} />
-          <input style={styles.input} placeholder="WhatsApp" value={form.whatsapp} onChange={e => setForm({ ...form, whatsapp: e.target.value })} />
-          <input style={styles.input} placeholder="Email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
-          <input style={styles.input} placeholder="CPF" value={form.cpf} onChange={e => setForm({ ...form, cpf: e.target.value })} />
-          <select style={styles.select} value={form.forma_pagamento} onChange={e => setForm({ ...form, forma_pagamento: e.target.value })}>
-            <option>Boleto</option><option>PIX</option><option>Cartão</option><option>Débito Automático</option>
-          </select>
-          <button style={styles.btn} type="submit">Adicionar</button>
-        </form>
-      </div>
+    <div className="space-y-5">
+      <PageHeader icon={UserGroupIcon} title="Clientes" subtitle={`${segurados.length} cadastrados`}>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="discord-btn bg-discord-blurple hover:bg-discord-blurple-dark text-white flex items-center gap-2"
+        >
+          {showForm ? <XMarkIcon className="w-4 h-4" /> : <PlusIcon className="w-4 h-4" />}
+          {showForm ? 'Cancelar' : 'Novo Cliente'}
+        </button>
+      </PageHeader>
 
-      <div style={styles.card}>
-        <h2 style={styles.h2}>Clientes Cadastrados</h2>
-        {loading && <p>Carregando...</p>}
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th}>Nome</th>
-              <th style={styles.th}>WhatsApp</th>
-              <th style={styles.th}>Email</th>
-              <th style={styles.th}>CPF</th>
-              <th style={styles.th}>Pagamento</th>
-              <th style={styles.th}>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {segurados.map(s => (
-              <>
-                <tr key={s.id}>
-                  {editId === s.id ? (
-                    <>
-                      <td style={styles.td}><input style={{ ...styles.input, marginBottom: 0 }} value={editForm.nome || ''} onChange={e => setEditForm({ ...editForm, nome: e.target.value })} /></td>
-                      <td style={styles.td}><input style={{ ...styles.input, marginBottom: 0 }} value={editForm.whatsapp || ''} onChange={e => setEditForm({ ...editForm, whatsapp: e.target.value })} /></td>
-                      <td style={styles.td}><input style={{ ...styles.input, marginBottom: 0 }} value={editForm.email || ''} onChange={e => setEditForm({ ...editForm, email: e.target.value })} /></td>
-                      <td style={styles.td}><input style={{ ...styles.input, marginBottom: 0 }} value={editForm.cpf || ''} onChange={e => setEditForm({ ...editForm, cpf: e.target.value })} /></td>
-                      <td style={styles.td}>
-                        <select style={{ ...styles.select, marginBottom: 0 }} value={editForm.forma_pagamento || ''} onChange={e => setEditForm({ ...editForm, forma_pagamento: e.target.value })}>
-                          <option>Boleto</option><option>PIX</option><option>Cartão</option><option>Débito Automático</option>
-                        </select>
-                      </td>
-                      <td style={styles.td}>
-                        <button style={styles.btnSuccess} onClick={() => salvarEdicao(s.id)}>Salvar</button>
-                        <button style={styles.btnSecondary} onClick={() => setEditId(null)}>Cancelar</button>
-                      </td>
-                    </>
-                  ) : (
-                    <>
-                      <td style={styles.td}><strong>{s.nome}</strong></td>
-                      <td style={styles.td}>{s.whatsapp}</td>
-                      <td style={styles.td}>{s.email}</td>
-                      <td style={styles.td}>{s.cpf}</td>
-                      <td style={styles.td}>{s.forma_pagamento}</td>
-                      <td style={styles.td}>
-                        <button style={styles.btnSecondary} onClick={() => verDetalhe(s.id)}>Seguros</button>
-                        <button style={{ ...styles.btnSecondary, marginRight: '6px' }} onClick={() => { setEditId(s.id); setEditForm(s) }}>Editar</button>
-                        <button style={styles.btnDanger} onClick={() => excluir(s.id)}>Excluir</button>
-                      </td>
-                    </>
-                  )}
+      {showForm && (
+        <div className="discord-card animate-in">
+          <h3 className="text-sm font-semibold text-discord-200 uppercase tracking-wider mb-4">Novo Cliente</h3>
+          <form onSubmit={adicionar} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-discord-300 mb-1.5">Nome *</label>
+              <input className="discord-input" placeholder="Nome completo" value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-discord-300 mb-1.5">WhatsApp</label>
+              <input className="discord-input" placeholder="(00) 00000-0000" value={form.whatsapp} onChange={e => setForm({ ...form, whatsapp: e.target.value })} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-discord-300 mb-1.5">Email</label>
+              <input className="discord-input" placeholder="email@exemplo.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-discord-300 mb-1.5">CPF</label>
+              <input className="discord-input" placeholder="000.000.000-00" value={form.cpf} onChange={e => setForm({ ...form, cpf: e.target.value })} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-discord-300 mb-1.5">Forma de Pagamento</label>
+              <select className="discord-select" value={form.forma_pagamento} onChange={e => setForm({ ...form, forma_pagamento: e.target.value })}>
+                <option>Boleto</option><option>PIX</option><option>Cartão</option><option>Débito Automático</option>
+              </select>
+            </div>
+            <div className="flex items-end">
+              <button type="submit" className="discord-btn bg-discord-green hover:bg-green-600 text-white w-full">
+                Adicionar Cliente
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      <div className="discord-card">
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="w-8 h-8 border-2 border-discord-blurple border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : segurados.length === 0 ? (
+          <EmptyState message="Nenhum cliente cadastrado ainda." />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-discord-600/50">
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider">Nome</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider hidden sm:table-cell">WhatsApp</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider hidden md:table-cell">Email</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider hidden lg:table-cell">CPF</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider hidden lg:table-cell">Pagamento</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider">Ações</th>
                 </tr>
-                {detalheId === s.id && detalhe && (
-                  <tr key={`det-${s.id}`}>
-                    <td colSpan={6} style={{ ...styles.td, background: '#f0f4f8', padding: '16px' }}>
-                      <strong>Seguros de {detalhe.nome}</strong>
-                      {detalhe.seguros && detalhe.seguros.length === 0 && <p>Nenhum seguro cadastrado.</p>}
-                      {detalhe.seguros && detalhe.seguros.map(seg => (
-                        <div key={seg.id} style={{ background: '#fff', borderRadius: '6px', padding: '12px', marginTop: '8px', border: '1px solid #ddd' }}>
-                          <div><strong>Apólice:</strong> {seg.apolice} | <strong>Companhia:</strong> {seg.companhia} | <strong>Tipo:</strong> {seg.tipo} | <strong>Bem:</strong> {seg.bem_segurado}</div>
-                          <div style={{ marginTop: '8px' }}>
-                            <strong>Parcelas:</strong>
-                            {seg.parcelas && seg.parcelas.length === 0 && <span> Nenhuma</span>}
-                            {seg.parcelas && seg.parcelas.map(p => (
-                              <span key={p.id} style={{ marginLeft: '8px', ...styles.badge(p.status) }}>
-                                {p.data_vencimento} — R$ {Number(p.valor).toFixed(2)} ({p.status})
-                              </span>
+              </thead>
+              <tbody className="divide-y divide-discord-600/30">
+                {segurados.map(s => (
+                  <tr key={s.id} className="group">
+                    {editId === s.id ? (
+                      <>
+                        <td className="py-3 px-4"><input className="discord-input" value={editForm.nome || ''} onChange={e => setEditForm({ ...editForm, nome: e.target.value })} /></td>
+                        <td className="py-3 px-4 hidden sm:table-cell"><input className="discord-input" value={editForm.whatsapp || ''} onChange={e => setEditForm({ ...editForm, whatsapp: e.target.value })} /></td>
+                        <td className="py-3 px-4 hidden md:table-cell"><input className="discord-input" value={editForm.email || ''} onChange={e => setEditForm({ ...editForm, email: e.target.value })} /></td>
+                        <td className="py-3 px-4 hidden lg:table-cell"><input className="discord-input" value={editForm.cpf || ''} onChange={e => setEditForm({ ...editForm, cpf: e.target.value })} /></td>
+                        <td className="py-3 px-4 hidden lg:table-cell">
+                          <select className="discord-select" value={editForm.forma_pagamento || ''} onChange={e => setEditForm({ ...editForm, forma_pagamento: e.target.value })}>
+                            <option>Boleto</option><option>PIX</option><option>Cartão</option><option>Débito Automático</option>
+                          </select>
+                        </td>
+                        <td className="py-3 px-4 text-right">
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button onClick={() => salvarEdicao(s.id)} className="discord-btn bg-discord-green hover:bg-green-600 text-white py-1.5 px-3 text-xs">Salvar</button>
+                            <button onClick={() => setEditId(null)} className="discord-btn bg-discord-600 hover:bg-discord-500 text-discord-200 py-1.5 px-3 text-xs">Cancelar</button>
+                          </div>
+                        </td>
+                      </>
+                    ) : (
+                      <>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-discord-blurple/20 flex items-center justify-center flex-shrink-0">
+                              <span className="text-xs font-semibold text-discord-blurple">{s.nome?.charAt(0)?.toUpperCase()}</span>
+                            </div>
+                            <span className="font-medium text-white">{s.nome}</span>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4 text-discord-300 hidden sm:table-cell">{s.whatsapp || '—'}</td>
+                        <td className="py-3 px-4 text-discord-300 hidden md:table-cell">{s.email || '—'}</td>
+                        <td className="py-3 px-4 text-discord-300 hidden lg:table-cell">{s.cpf || '—'}</td>
+                        <td className="py-3 px-4 hidden lg:table-cell">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-discord-600/50 text-discord-200">
+                            {s.forma_pagamento}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-right">
+                          <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onClick={() => verDetalhe(s.id)} className="p-1.5 rounded-md hover:bg-discord-blurple/20 text-discord-400 hover:text-discord-blurple transition-colors" title="Ver seguros">
+                              {detalheId === s.id ? <ChevronDownIcon className="w-4 h-4" /> : <ChevronRightIcon className="w-4 h-4" />}
+                            </button>
+                            <button onClick={() => { setEditId(s.id); setEditForm(s) }} className="p-1.5 rounded-md hover:bg-discord-yellow/20 text-discord-400 hover:text-discord-yellow transition-colors" title="Editar">
+                              <PencilSquareIcon className="w-4 h-4" />
+                            </button>
+                            <button onClick={() => excluir(s.id)} className="p-1.5 rounded-md hover:bg-discord-red/20 text-discord-400 hover:text-discord-red transition-colors" title="Excluir">
+                              <TrashIcon className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {segurados.map(s => (
+              detalheId === s.id && detalhe && (
+                <div key={`det-${s.id}`} className="border-t border-discord-600/30 bg-discord-800/50 p-4 rounded-b-lg">
+                  <h4 className="text-sm font-semibold text-discord-200 mb-3">Seguros de {detalhe.nome}</h4>
+                  {detalhe.seguros && detalhe.seguros.length === 0 && (
+                    <p className="text-discord-400 text-sm">Nenhum seguro cadastrado.</p>
+                  )}
+                  <div className="space-y-3">
+                    {detalhe.seguros && detalhe.seguros.map(seg => (
+                      <div key={seg.id} className="bg-discord-700 rounded-lg p-3 border border-discord-600/30">
+                        <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                          <span><span className="text-discord-400">Apólice:</span> <span className="text-white font-medium">{seg.apolice}</span></span>
+                          <span><span className="text-discord-400">Companhia:</span> <span className="text-discord-200">{seg.companhia}</span></span>
+                          <span><span className="text-discord-400">Tipo:</span> <span className="text-discord-200">{seg.tipo}</span></span>
+                          <span><span className="text-discord-400">Bem:</span> <span className="text-discord-200">{seg.bem_segurado}</span></span>
+                        </div>
+                        {seg.parcelas && seg.parcelas.length > 0 && (
+                          <div className="mt-2 pt-2 border-t border-discord-600/30 flex flex-wrap gap-2">
+                            {seg.parcelas.map(p => (
+                              <StatusBadge key={p.id} status={p.status} />
                             ))}
                           </div>
-                        </div>
-                      ))}
-                    </td>
-                  </tr>
-                )}
-              </>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )
             ))}
-          </tbody>
-        </table>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -175,6 +355,7 @@ function SegurosTab() {
   const [seguros, setSeguros] = useState([])
   const [segurados, setSegurados] = useState([])
   const [form, setForm] = useState({ segurado_id: '', companhia: '', tipo: '', apolice: '', bem_segurado: '' })
+  const [showForm, setShowForm] = useState(false)
 
   useEffect(() => {
     fetch('/api/seguros').then(r => r.json()).then(d => setSeguros(d || []))
@@ -186,6 +367,7 @@ function SegurosTab() {
     if (!form.segurado_id || !form.apolice) return alert('Segurado e Apólice são obrigatórios')
     await fetch('/api/seguros', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, segurado_id: parseInt(form.segurado_id) }) })
     setForm({ segurado_id: '', companhia: '', tipo: '', apolice: '', bem_segurado: '' })
+    setShowForm(false)
     fetch('/api/seguros').then(r => r.json()).then(d => setSeguros(d || []))
   }
 
@@ -196,55 +378,118 @@ function SegurosTab() {
   }
 
   return (
-    <div>
-      <div style={styles.card}>
-        <h2 style={styles.h2}>Adicionar Seguro</h2>
-        <form onSubmit={adicionar}>
-          <select style={styles.select} value={form.segurado_id} onChange={e => setForm({ ...form, segurado_id: e.target.value })}>
-            <option value="">Selecione o cliente *</option>
-            {segurados.map(s => <option key={s.id} value={s.id}>{s.nome}</option>)}
-          </select>
-          <input style={styles.input} placeholder="Apólice *" value={form.apolice} onChange={e => setForm({ ...form, apolice: e.target.value })} />
-          <input style={styles.input} placeholder="Companhia" value={form.companhia} onChange={e => setForm({ ...form, companhia: e.target.value })} />
-          <input style={styles.input} placeholder="Tipo (Auto, Vida...)" value={form.tipo} onChange={e => setForm({ ...form, tipo: e.target.value })} />
-          <input style={styles.input} placeholder="Bem Segurado" value={form.bem_segurado} onChange={e => setForm({ ...form, bem_segurado: e.target.value })} />
-          <button style={styles.btn} type="submit">Adicionar</button>
-        </form>
-      </div>
+    <div className="space-y-5">
+      <PageHeader icon={ShieldCheckIcon} title="Seguros" subtitle={`${seguros.length} cadastrados`}>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="discord-btn bg-discord-blurple hover:bg-discord-blurple-dark text-white flex items-center gap-2"
+        >
+          {showForm ? <XMarkIcon className="w-4 h-4" /> : <PlusIcon className="w-4 h-4" />}
+          {showForm ? 'Cancelar' : 'Novo Seguro'}
+        </button>
+      </PageHeader>
 
-      <div style={styles.card}>
-        <h2 style={styles.h2}>Seguros Cadastrados</h2>
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th}>ID</th>
-              <th style={styles.th}>Cliente</th>
-              <th style={styles.th}>Apólice</th>
-              <th style={styles.th}>Companhia</th>
-              <th style={styles.th}>Tipo</th>
-              <th style={styles.th}>Bem Segurado</th>
-              <th style={styles.th}>Parcelas</th>
-              <th style={styles.th}>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {seguros.map(s => {
-              const segurado = segurados.find(sg => sg.id === s.segurado_id)
-              return (
-                <tr key={s.id}>
-                  <td style={styles.td}>{s.id}</td>
-                  <td style={styles.td}>{segurado ? segurado.nome : s.segurado_id}</td>
-                  <td style={styles.td}>{s.apolice}</td>
-                  <td style={styles.td}>{s.companhia}</td>
-                  <td style={styles.td}>{s.tipo}</td>
-                  <td style={styles.td}>{s.bem_segurado}</td>
-                  <td style={styles.td}>{s.parcelas ? s.parcelas.length : 0}</td>
-                  <td style={styles.td}><button style={styles.btnDanger} onClick={() => excluir(s.id)}>Excluir</button></td>
+      {showForm && (
+        <div className="discord-card">
+          <h3 className="text-sm font-semibold text-discord-200 uppercase tracking-wider mb-4">Novo Seguro</h3>
+          <form onSubmit={adicionar} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-discord-300 mb-1.5">Cliente *</label>
+              <select className="discord-select" value={form.segurado_id} onChange={e => setForm({ ...form, segurado_id: e.target.value })}>
+                <option value="">Selecione o cliente</option>
+                {segurados.map(s => <option key={s.id} value={s.id}>{s.nome}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-discord-300 mb-1.5">Apólice *</label>
+              <input className="discord-input" placeholder="Número da apólice" value={form.apolice} onChange={e => setForm({ ...form, apolice: e.target.value })} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-discord-300 mb-1.5">Companhia</label>
+              <input className="discord-input" placeholder="Nome da companhia" value={form.companhia} onChange={e => setForm({ ...form, companhia: e.target.value })} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-discord-300 mb-1.5">Tipo</label>
+              <input className="discord-input" placeholder="Auto, Vida, Residencial..." value={form.tipo} onChange={e => setForm({ ...form, tipo: e.target.value })} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-discord-300 mb-1.5">Bem Segurado</label>
+              <input className="discord-input" placeholder="Descrição do bem" value={form.bem_segurado} onChange={e => setForm({ ...form, bem_segurado: e.target.value })} />
+            </div>
+            <div className="flex items-end">
+              <button type="submit" className="discord-btn bg-discord-green hover:bg-green-600 text-white w-full">
+                Adicionar Seguro
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      <div className="discord-card">
+        {seguros.length === 0 ? (
+          <EmptyState message="Nenhum seguro cadastrado ainda." />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-discord-600/50">
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider">ID</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider">Cliente</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider">Apólice</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider hidden sm:table-cell">Companhia</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider hidden md:table-cell">Tipo</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider hidden lg:table-cell">Bem Segurado</th>
+                  <th className="text-center py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider">Parcelas</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider">Ações</th>
                 </tr>
-              )
-            })}
-          </tbody>
-        </table>
+              </thead>
+              <tbody className="divide-y divide-discord-600/30">
+                {seguros.map(s => {
+                  const segurado = segurados.find(sg => sg.id === s.segurado_id)
+                  return (
+                    <tr key={s.id} className="group hover:bg-discord-600/20 transition-colors">
+                      <td className="py-3 px-4 text-discord-400 font-mono text-xs">#{s.id}</td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-discord-blurple/20 flex items-center justify-center flex-shrink-0">
+                            <span className="text-[10px] font-semibold text-discord-blurple">
+                              {(segurado ? segurado.nome : '?').charAt(0).toUpperCase()}
+                            </span>
+                          </div>
+                          <span className="text-discord-200 font-medium">{segurado ? segurado.nome : s.segurado_id}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-white font-medium">{s.apolice}</td>
+                      <td className="py-3 px-4 text-discord-300 hidden sm:table-cell">{s.companhia || '—'}</td>
+                      <td className="py-3 px-4 hidden md:table-cell">
+                        {s.tipo ? (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-discord-600/50 text-discord-200">
+                            {s.tipo}
+                          </span>
+                        ) : '—'}
+                      </td>
+                      <td className="py-3 px-4 text-discord-300 hidden lg:table-cell">{s.bem_segurado || '—'}</td>
+                      <td className="py-3 px-4 text-center">
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-discord-600/50 text-discord-200 text-xs font-semibold">
+                          {s.parcelas ? s.parcelas.length : 0}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        <button
+                          onClick={() => excluir(s.id)}
+                          className="p-1.5 rounded-md hover:bg-discord-red/20 text-discord-400 hover:text-discord-red transition-colors opacity-0 group-hover:opacity-100"
+                          title="Excluir"
+                        >
+                          <TrashIcon className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -256,6 +501,7 @@ function ParcelasTab() {
   const [seguros, setSeguros] = useState([])
   const [form, setForm] = useState({ seguro_id: '', data_vencimento: '', valor: '', status: 'Pendente' })
   const [filtro, setFiltro] = useState('Todos')
+  const [showForm, setShowForm] = useState(false)
 
   useEffect(() => {
     fetchParcelas()
@@ -273,6 +519,7 @@ function ParcelasTab() {
     if (!form.seguro_id || !form.data_vencimento || !form.valor) return alert('Preencha todos os campos obrigatórios')
     await fetch('/api/parcelas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, seguro_id: parseInt(form.seguro_id), valor: parseFloat(form.valor) }) })
     setForm({ seguro_id: '', data_vencimento: '', valor: '', status: 'Pendente' })
+    setShowForm(false)
     fetchParcelas()
   }
 
@@ -293,65 +540,139 @@ function ParcelasTab() {
     .filter(p => filtro === 'Todos' || p.status === filtro)
 
   const totalPendente = parcelas.filter(p => p.status !== 'Pago').reduce((acc, p) => acc + Number(p.valor), 0)
+  const totalPago = parcelas.filter(p => p.status === 'Pago').reduce((acc, p) => acc + Number(p.valor), 0)
+
+  const FILTER_TABS = [
+    { key: 'Todos', label: 'Todos', count: parcelas.length },
+    { key: 'Pendente', label: 'Pendente', count: parcelas.filter(p => p.status === 'Pendente' && !(p.data_vencimento < hoje)).length },
+    { key: 'Vencido', label: 'Vencido', count: parcelas.filter(p => p.status !== 'Pago' && p.data_vencimento < hoje).length },
+    { key: 'Pago', label: 'Pago', count: parcelas.filter(p => p.status === 'Pago').length },
+  ]
 
   return (
-    <div>
-      <div style={styles.card}>
-        <h2 style={styles.h2}>Adicionar Parcela</h2>
-        <form onSubmit={adicionar}>
-          <select style={styles.select} value={form.seguro_id} onChange={e => setForm({ ...form, seguro_id: e.target.value })}>
-            <option value="">Selecione o Seguro *</option>
-            {seguros.map(s => <option key={s.id} value={s.id}>#{s.id} — {s.apolice} ({s.companhia})</option>)}
-          </select>
-          <input style={styles.input} type="date" value={form.data_vencimento} onChange={e => setForm({ ...form, data_vencimento: e.target.value })} />
-          <input style={styles.input} placeholder="Valor (R$) *" value={form.valor} onChange={e => setForm({ ...form, valor: e.target.value })} />
-          <select style={styles.select} value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
-            <option>Pendente</option><option>Pago</option><option>Vencido</option>
-          </select>
-          <button style={styles.btn} type="submit">Adicionar</button>
-        </form>
+    <div className="space-y-5">
+      <PageHeader icon={CurrencyDollarIcon} title="Parcelas" subtitle={`${parcelas.length} registradas`}>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="discord-btn bg-discord-blurple hover:bg-discord-blurple-dark text-white flex items-center gap-2"
+        >
+          {showForm ? <XMarkIcon className="w-4 h-4" /> : <PlusIcon className="w-4 h-4" />}
+          {showForm ? 'Cancelar' : 'Nova Parcela'}
+        </button>
+      </PageHeader>
+
+      {/* Summary cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="bg-discord-red/10 border border-discord-red/20 rounded-xl p-4">
+          <p className="text-xs font-medium text-discord-400 uppercase tracking-wider">Total em Aberto</p>
+          <p className="text-2xl font-bold text-red-400 mt-1">R$ {totalPendente.toFixed(2)}</p>
+        </div>
+        <div className="bg-discord-green/10 border border-discord-green/20 rounded-xl p-4">
+          <p className="text-xs font-medium text-discord-400 uppercase tracking-wider">Total Pago</p>
+          <p className="text-2xl font-bold text-green-400 mt-1">R$ {totalPago.toFixed(2)}</p>
+        </div>
       </div>
 
-      <div style={styles.card}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <h2 style={{ ...styles.h2, marginBottom: 0 }}>Parcelas</h2>
-          <span style={{ fontSize: '14px', color: '#c62828', fontWeight: '600' }}>Total em Aberto: R$ {totalPendente.toFixed(2)}</span>
+      {showForm && (
+        <div className="discord-card">
+          <h3 className="text-sm font-semibold text-discord-200 uppercase tracking-wider mb-4">Nova Parcela</h3>
+          <form onSubmit={adicionar} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-discord-300 mb-1.5">Seguro *</label>
+              <select className="discord-select" value={form.seguro_id} onChange={e => setForm({ ...form, seguro_id: e.target.value })}>
+                <option value="">Selecione o seguro</option>
+                {seguros.map(s => <option key={s.id} value={s.id}>#{s.id} — {s.apolice} ({s.companhia})</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-discord-300 mb-1.5">Vencimento *</label>
+              <input type="date" className="discord-input" value={form.data_vencimento} onChange={e => setForm({ ...form, data_vencimento: e.target.value })} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-discord-300 mb-1.5">Valor (R$) *</label>
+              <input className="discord-input" placeholder="0,00" value={form.valor} onChange={e => setForm({ ...form, valor: e.target.value })} />
+            </div>
+            <div className="flex items-end">
+              <button type="submit" className="discord-btn bg-discord-green hover:bg-green-600 text-white w-full">
+                Adicionar Parcela
+              </button>
+            </div>
+          </form>
         </div>
-        <div style={{ marginBottom: '12px' }}>
-          {['Todos', 'Pendente', 'Vencido', 'Pago'].map(f => (
-            <button key={f} style={{ ...styles.tab(filtro === f), marginRight: '8px' }} onClick={() => setFiltro(f)}>{f}</button>
+      )}
+
+      <div className="discord-card">
+        {/* Filter tabs */}
+        <div className="flex flex-wrap gap-2 mb-4 pb-4 border-b border-discord-600/30">
+          {FILTER_TABS.map(f => (
+            <button
+              key={f.key}
+              onClick={() => setFiltro(f.key)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                filtro === f.key
+                  ? 'bg-discord-blurple text-white'
+                  : 'bg-discord-600/30 text-discord-300 hover:bg-discord-600/50 hover:text-discord-100'
+              }`}
+            >
+              {f.label}
+              <span className={`inline-flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-bold ${
+                filtro === f.key ? 'bg-white/20 text-white' : 'bg-discord-600/50 text-discord-400'
+              }`}>
+                {f.count}
+              </span>
+            </button>
           ))}
         </div>
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th}>Seguro ID</th>
-              <th style={styles.th}>Vencimento</th>
-              <th style={styles.th}>Valor</th>
-              <th style={styles.th}>Status</th>
-              <th style={styles.th}>Data Pagamento</th>
-              <th style={styles.th}>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {parcelasFiltradas.map(p => (
-              <tr key={p.id}>
-                <td style={styles.td}>{p.seguro_id}</td>
-                <td style={styles.td}>{p.data_vencimento}</td>
-                <td style={styles.td}>R$ {Number(p.valor).toFixed(2)}</td>
-                <td style={styles.td}><span style={styles.badge(p.status)}>{p.status}</span></td>
-                <td style={styles.td}>{p.data_pagamento || '—'}</td>
-                <td style={styles.td}>
-                  {p.status !== 'Pago' && <button style={styles.btnSuccess} onClick={() => marcarPago(p)}>✓ Pago</button>}
-                  <button style={styles.btnDanger} onClick={() => excluir(p.id)}>Excluir</button>
-                </td>
-              </tr>
-            ))}
-            {parcelasFiltradas.length === 0 && (
-              <tr><td colSpan={6} style={{ ...styles.td, textAlign: 'center', color: '#888' }}>Nenhuma parcela encontrada.</td></tr>
-            )}
-          </tbody>
-        </table>
+
+        {parcelasFiltradas.length === 0 ? (
+          <EmptyState message="Nenhuma parcela encontrada." />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-discord-600/50">
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider">Seguro</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider">Vencimento</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider">Valor</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider">Status</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider hidden sm:table-cell">Pagamento</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-discord-400 uppercase tracking-wider">Ações</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-discord-600/30">
+                {parcelasFiltradas.map(p => (
+                  <tr key={p.id} className="group hover:bg-discord-600/20 transition-colors">
+                    <td className="py-3 px-4 text-discord-300 font-mono text-xs">#{p.seguro_id}</td>
+                    <td className="py-3 px-4 text-discord-200">{p.data_vencimento}</td>
+                    <td className="py-3 px-4 text-white font-semibold">R$ {Number(p.valor).toFixed(2)}</td>
+                    <td className="py-3 px-4"><StatusBadge status={p.status} /></td>
+                    <td className="py-3 px-4 text-discord-400 hidden sm:table-cell">{p.data_pagamento || '—'}</td>
+                    <td className="py-3 px-4 text-right">
+                      <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {p.status !== 'Pago' && (
+                          <button
+                            onClick={() => marcarPago(p)}
+                            className="p-1.5 rounded-md hover:bg-discord-green/20 text-discord-400 hover:text-discord-green transition-colors"
+                            title="Marcar como pago"
+                          >
+                            <CheckCircleIcon className="w-4 h-4" />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => excluir(p.id)}
+                          className="p-1.5 rounded-md hover:bg-discord-red/20 text-discord-400 hover:text-discord-red transition-colors"
+                          title="Excluir"
+                        >
+                          <TrashIcon className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -362,21 +683,32 @@ export default function Home() {
   const [tab, setTab] = useState('segurados')
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <h1 style={{ margin: 0, fontSize: '22px' }}>🗂️ Controle de Boletos</h1>
-        <p style={{ margin: '4px 0 0', fontSize: '13px', opacity: 0.8 }}>Sistema de controle de seguros e parcelas</p>
-      </div>
+    <div className="flex min-h-screen bg-discord-900">
+      <Sidebar tab={tab} setTab={setTab} />
 
-      <div style={styles.tabBar}>
-        <button style={styles.tab(tab === 'segurados')} onClick={() => setTab('segurados')}>👤 Clientes</button>
-        <button style={styles.tab(tab === 'seguros')} onClick={() => setTab('seguros')}>📋 Seguros</button>
-        <button style={styles.tab(tab === 'parcelas')} onClick={() => setTab('parcelas')}>💰 Parcelas</button>
-      </div>
+      <div className="flex-1 flex flex-col min-h-screen">
+        <MobileHeader tab={tab} setTab={setTab} />
 
-      {tab === 'segurados' && <SeguradosTab />}
-      {tab === 'seguros' && <SegurosTab />}
-      {tab === 'parcelas' && <ParcelasTab />}
+        {/* Top bar (desktop) */}
+        <header className="hidden md:flex items-center h-14 px-6 bg-discord-700 border-b border-discord-600/50 shadow-sm">
+          <span className="text-discord-400 mr-2">#</span>
+          <span className="text-white font-semibold text-sm">
+            {NAV_ITEMS.find(n => n.key === tab)?.label}
+          </span>
+          <div className="ml-3 h-6 w-px bg-discord-600/50" />
+          <span className="ml-3 text-xs text-discord-400">
+            {tab === 'segurados' && 'Gerencie seus clientes e segurados'}
+            {tab === 'seguros' && 'Controle de apólices e seguros'}
+            {tab === 'parcelas' && 'Acompanhe parcelas e pagamentos'}
+          </span>
+        </header>
+
+        <main className="flex-1 p-4 md:p-6 overflow-auto">
+          {tab === 'segurados' && <SeguradosTab />}
+          {tab === 'seguros' && <SegurosTab />}
+          {tab === 'parcelas' && <ParcelasTab />}
+        </main>
+      </div>
     </div>
   )
 }
