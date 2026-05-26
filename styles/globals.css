@@ -1,9 +1,54 @@
-* {
-  box-sizing: border-box;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply m-0 p-0 bg-discord-900 text-discord-100 font-sans antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-discord-800;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-discord-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-discord-500;
+  }
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  background: #f5f7fa;
+@layer components {
+  .discord-input {
+    @apply w-full px-3 py-2 bg-discord-900 border border-discord-600 rounded-lg text-discord-100
+           placeholder-discord-400 text-sm transition-colors duration-200
+           focus:outline-none focus:border-discord-blurple focus:ring-1 focus:ring-discord-blurple;
+  }
+
+  .discord-select {
+    @apply w-full px-3 py-2 bg-discord-900 border border-discord-600 rounded-lg text-discord-100
+           text-sm transition-colors duration-200 cursor-pointer
+           focus:outline-none focus:border-discord-blurple focus:ring-1 focus:ring-discord-blurple;
+  }
+
+  .discord-btn {
+    @apply px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
+           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-discord-700;
+  }
+
+  .discord-card {
+    @apply bg-discord-700 rounded-xl p-5 border border-discord-600/50;
+  }
 }
